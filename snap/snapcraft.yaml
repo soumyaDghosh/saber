@@ -22,10 +22,13 @@ plugs:
     interface: dbus
     name: com.adilhanney.saber
 parts:
+  desktop:
+    source: .
+    plugin: dump
   saber:
     # See 'snapcraft plugins'
     plugin:  flutter
-    source: .
+    source: https://github.com/adil192/saber.git
     source-tag: v${SNAPCRAFT_PROJECT_VERSION}
     build-packages:
       - libsecret-1-dev
