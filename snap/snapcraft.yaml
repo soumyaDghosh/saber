@@ -56,8 +56,6 @@ apps:
     extensions: [flutter-stable]
     common-id: com.adilhanney.saber
     #desktop: gui/saber.desktop
-    environment:
-      HOME: $SNAP_REAL_HOME
     plugs:
       - home
       - network
