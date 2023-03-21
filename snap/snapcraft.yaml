@@ -80,7 +80,7 @@ parts:
 apps:
   saber:
     command: bin/saber
-    desktop: snap/meta/gui/saber.desktop
+    desktop: snap/gui/saber.desktop
     extensions: [gnome]
     common-id: com.adilhanney.saber
     plugs:
