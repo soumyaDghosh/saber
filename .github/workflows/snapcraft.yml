@@ -23,7 +23,7 @@ jobs:
           # Plugs and Slots declarations to override default denial (requires store assertion to publish)
           # plugs: ./plug-declaration.json
           # slots: ./slot-declaration.json
-      - name: Upload and release Tube-Converter Snap
+      - name: Upload and release Saber Snap
         uses: snapcore/action-publish@v1
         env: 
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
