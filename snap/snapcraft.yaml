@@ -67,10 +67,6 @@ parts:
     source-type: git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
     plugin: nil
-    build-environemt:
-      - RUSTUP_HOME: $CRAFT_STAGE/usr/share/rust
-      - CARGO_HOME: $CRAFT_STAGE/usr/share/rust
-      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
     #build-attributes: [enable-patchelf]
     build-packages:
       - jq
@@ -82,6 +78,9 @@ parts:
       - zenity
     override-build: |
       set -eux
+      export RUSTUP_HOME=$CRAFT_PART_INSTALL/usr/share/rust
+      export CARGO_HOME=$CRAFT_STAGE/usr/share/rust
+      export CARGO_BUILD_JOBS=$CRAFT_PARALLEL_BUILD_COUNT
       flutter pub get || true
       flutter build linux --release
       mkdir -p $CRAFT_PART_INSTALL/bin
