@@ -17,11 +17,30 @@ architectures:
     build-for: amd64
 
 parts:
+  rustup:
+    plugin: nil
+    build-packages: [wget]
+    build-environment:
+      - RUSTUP_HOME: $CRAFT_PART_INSTALL/usr/share/rust
+      - CARGO_HOME: $CRAFT_PART_INSTALL/usr/share/rust
+      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
+    override-pull: |
+      wget https://sh.rustup.rs -O $CRAFT_PART_SRC/rustup-init.sh
+      chmod +x $CRAFT_PART_SRC/rustup-init.sh
+    override-build: |
+      $CRAFT_PART_SRC/rustup-init.sh -y --no-modify-path
+      mkdir -p $CRAFT_PART_INSTALL/usr/bin
+      for i in `ls $RUSTUP_HOME/bin/`; do
+        ln -s ../share/rust/bin/$i $CRAFT_PART_INSTALL/usr/bin/$i
+      done
+    override-prime: |
+      echo 'Skip Prime'
   desktop:
-    after: [saber, flutter-git]
+    after: [saber, flutter-git, rustup]
     source: .
     plugin: dump
   flutter-git:
+    after: [rustup]
     source: https://github.com/flutter/flutter.git
     source-tag: 3.7.9 # run local/flutter/update-artifacts.sh [x.y.z]
     source-depth: 1
@@ -43,11 +62,15 @@ parts:
       - zip
     override-prime: ''
   saber:
-    after: [flutter-git]
+    after: [flutter-git, rustup]
     source: https://github.com/adil192/saber.git
     source-type: git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
     plugin: nil
+    build-environemt:
+      - RUSTUP_HOME: $CRAFT_STAGE/usr/share/rust
+      - CARGO_HOME: $CRAFT_STAGE/usr/share/rust
+      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
     #build-attributes: [enable-patchelf]
     build-packages:
       - jq
