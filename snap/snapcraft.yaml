@@ -58,15 +58,6 @@ parts:
       - libsecret-1-0
       - libjsoncpp25
       - zenity
-    override-build: |
-      set -eux
-      export RUSTUP_HOME=$CRAFT_PART_INSTALL/usr/share/rust
-      export CARGO_HOME=$CRAFT_STAGE/usr/share/rust
-      export CARGO_BUILD_JOBS=$CRAFT_PARALLEL_BUILD_COUNT
-      flutter pub get || true
-      flutter build linux --release
-      mkdir -p $CRAFT_PART_INSTALL/bin
-      cp -r build/linux/*/release/bundle/* $CRAFT_PART_INSTALL/bin/
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - saber
