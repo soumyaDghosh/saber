@@ -61,7 +61,7 @@ parts:
 
 apps:
   saber:
-    command: bin/saber
+    command: saber
     desktop: snap/gui/saber.desktop
     extensions: [gnome]
     common-id: com.adilhanney.saber
