@@ -36,38 +36,20 @@ parts:
     override-prime: |
       echo 'Skip Prime'
   desktop:
-    after: [saber, flutter-git, rustup]
+    after: [saber, rustup]
     source: .
     plugin: dump
-  flutter-git:
-    after: [rustup]
-    source: https://github.com/flutter/flutter.git
-    source-tag: 3.7.9 # run local/flutter/update-artifacts.sh [x.y.z]
-    source-depth: 1
-    plugin: nil
-    override-build: |
-      mkdir -p $CRAFT_PART_INSTALL/usr/bin
-      mkdir -p $CRAFT_PART_INSTALL/usr/libexec
-      cp -r $CRAFT_PART_SRC $CRAFT_PART_INSTALL/usr/libexec/flutter
-      ln -s $CRAFT_PART_INSTALL/usr/libexec/flutter/bin/flutter $CRAFT_PART_INSTALL/usr/bin/flutter
-      $CRAFT_PART_INSTALL/usr/bin/flutter doctor
-    build-packages:
-      - clang
-      - cmake
-      - curl
-      - libgtk-3-dev
-      - ninja-build
-      - unzip
-      - xz-utils
-      - zip
-    override-prime: ''
   saber:
-    after: [flutter-git, rustup]
+    after: [rustup]
     source: https://github.com/adil192/saber.git
     source-type: git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
-    plugin: nil
+    plugin: flutter
     #build-attributes: [enable-patchelf]
+    build-environment:
+      - RUSTUP_HOME: $CRAFT_PART_INSTALL/usr/share/rust
+      - CARGO_HOME: $CRAFT_PART_INSTALL/usr/share/rust
+      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
     build-packages:
       - jq
       - libsecret-1-dev
