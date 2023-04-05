@@ -23,11 +23,10 @@ package-repositories:
     url: https://proget.makedeb.org
 parts:
   desktop:
-    after: [saber, rustup]
+    after: [saber]
     source: .
     plugin: dump
   saber:
-    after: [rustup]
     source: https://github.com/adil192/saber.git
     source-type: git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
@@ -48,6 +47,7 @@ parts:
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - saber
+      - desktop
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
       - core22
