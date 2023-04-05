@@ -15,26 +15,13 @@ contact: soumyadeepghosh2004@zohomail.in
 architectures:
   - build-on: amd64
     build-for: amd64
-
+package-repositories:
+  - type: apt
+    components: [jammy]
+    suites: [prebuilt-mpr]
+    key-id: B70EAE798718E0FE2972DD0C4FE9F2C43D9428A0
+    url: https://proget.makedeb.org
 parts:
-  rustup:
-    plugin: nil
-    build-packages: [wget]
-    build-environment:
-      - RUSTUP_HOME: $CRAFT_PART_INSTALL/usr/share/rust
-      - CARGO_HOME: $CRAFT_PART_INSTALL/usr/share/rust
-      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
-    override-pull: |
-      wget https://sh.rustup.rs -O $CRAFT_PART_SRC/rustup-init.sh
-      chmod +x $CRAFT_PART_SRC/rustup-init.sh
-    override-build: |
-      $CRAFT_PART_SRC/rustup-init.sh -y --no-modify-path
-      mkdir -p $CRAFT_PART_INSTALL/usr/bin
-      for i in `ls $RUSTUP_HOME/bin/`; do
-        ln -s ../share/rust/bin/$i $CRAFT_PART_INSTALL/usr/bin/$i
-      done
-    override-prime: |
-      echo 'Skip Prime'
   desktop:
     after: [saber, rustup]
     source: .
@@ -46,11 +33,8 @@ parts:
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
     plugin: flutter
     #build-attributes: [enable-patchelf]
-    build-environment:
-      - RUSTUP_HOME: $CRAFT_PART_INSTALL/usr/share/rust
-      - CARGO_HOME: $CRAFT_PART_INSTALL/usr/share/rust
-      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
     build-packages:
+      - rustup
       - jq
       - libsecret-1-dev
       - libjsoncpp-dev
@@ -68,10 +52,10 @@ parts:
     build-snaps:  # List all content-snaps and base snaps you're using here
       - core22
       - gnome-42-2204
-      - gnome-42-2204-sdk
+      - gtk-common-themes
     override-prime: |
       set -eux
-      for snap in "core22" "gnome-42-2204" "gnome-42-2204-sdk" ; do  # List all content-snaps and base snaps you're using here
+      for snap in "core22" "gnome-42-2204" "gtk-common-themes" ; do  # List all content-snaps and base snaps you're using here
         cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
       done
 
