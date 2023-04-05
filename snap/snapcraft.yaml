@@ -58,6 +58,9 @@ parts:
       - libsecret-1-0
       - libjsoncpp25
       - zenity
+    override-pull: |
+      craftctl default
+      rustup default stable
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - saber
