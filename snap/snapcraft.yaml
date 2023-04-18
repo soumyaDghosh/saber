@@ -14,28 +14,41 @@ architectures:
   - build-on: amd64
   - build-on: arm64
   - build-on: armhf
-package-repositories:
-  - type: apt
-    components: [jammy]
-    suites: [prebuilt-mpr]
-    key-id: B70EAE798718E0FE2972DD0C4FE9F2C43D9428A0
-    url: https://proget.makedeb.org
 parts:
+  rustup:
+    plugin: nil
+    build-packages: [wget]
+    build-environment:
+      - RUSTUP_HOME: $CRAFT_PART_INSTALL/usr/share/rust
+      - CARGO_HOME: $CRAFT_PART_INSTALL/usr/share/rust
+      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
+    override-pull: |
+      wget https://sh.rustup.rs -O $CRAFT_PART_SRC/rustup-init.sh
+      chmod +x $CRAFT_PART_SRC/rustup-init.sh
+    override-build: |
+      $CRAFT_PART_SRC/rustup-init.sh -y --no-modify-path
+      mkdir -p $CRAFT_PART_INSTALL/usr/bin
+      for i in `ls $RUSTUP_HOME/bin/`; do
+        ln -s ../share/rust/bin/$i $CRAFT_PART_INSTALL/usr/bin/$i
+      done
+    override-prime: |
+      echo 'Skip Prime'
   desktop:
-    after: [saber]
+    after: [saber, rustup]
     source: .
     plugin: dump
     prime:
       - snap/*
     parse-info: [$SNAP/meta/metainfo/com.adilhanney.saber.metainfo.xml]
   saber:
+    after: [rustup]
     source: https://github.com/adil192/saber.git
     source-type: git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
     plugin: flutter
     #build-attributes: [enable-patchelf]
     build-packages:
-      - rustup
+      - curl
       - jq
       - libsecret-1-dev
       - libjsoncpp-dev
@@ -43,12 +56,14 @@ parts:
       - libsecret-1-0
       - libjsoncpp25
       - zenity
-    override-pull: |
-      craftctl default
-      rustup default stable
+    build-environment:
+      - RUSTUP_HOME: $CRAFT_STAGE/usr/share/rust
+      - CARGO_HOME: $CRAFT_STAGE/usr/share/rust
+      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - saber
+      - rustup
       - desktop
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
