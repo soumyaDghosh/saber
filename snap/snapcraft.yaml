@@ -13,8 +13,6 @@ issues: https://github.com/adil192/saber/issues
 contact: soumyadeepghosh2004@zohomail.in
 architectures:
   - build-on: amd64
-  - build-on: arm64
-  - build-on: armhf
 parts:
   rustup:
     plugin: nil
@@ -63,6 +61,7 @@ parts:
       - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
     override-build: |
       craftctl default
+      mkdir $CRAFT_PRIME/meta
       mkdir $CRAFT_PRIME/meta/gui
       mv $CRAFT_PART_SRC/flatpak/com.adilhanney.saber.desktop $CRAFT_PRIME/meta/gui/saber.desktop
   cleanup:
