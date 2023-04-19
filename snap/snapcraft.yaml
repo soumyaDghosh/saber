@@ -6,6 +6,7 @@ grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 license: GPL-3.0
 compression: lzo
+icon: icon.png
 donation: https://github.com/sponsors/adil192
 source-code: https://github.com/adil192/saber
 issues: https://github.com/adil192/saber/issues
@@ -39,7 +40,7 @@ parts:
     plugin: dump
     prime:
       - snap/*
-    parse-info: [$SNAP/meta/metainfo/com.adilhanney.saber.metainfo.xml]
+    parse-info: [snap/meta/metainfo/com.adilhanney.saber.metainfo.xml]
   saber:
     after: [rustup]
     source: https://github.com/adil192/saber.git
@@ -60,6 +61,10 @@ parts:
       - RUSTUP_HOME: $CRAFT_STAGE/usr/share/rust
       - CARGO_HOME: $CRAFT_STAGE/usr/share/rust
       - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
+    override-build: |
+      craftctl default
+      mkdir $CRAFT_PRIME/meta/gui
+      mv $CRAFT_PART_SRC/flatpak/com.adilhanney.saber.desktop $CRAFT_PRIME/meta/gui/saber.desktop
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - saber
@@ -79,7 +84,7 @@ parts:
 apps:
   saber:
     command: saber
-    desktop: snap/gui/saber.desktop
+    desktop: meta/gui/saber.desktop
     extensions: [gnome]
     common-id: com.adilhanney.saber
     plugs:
