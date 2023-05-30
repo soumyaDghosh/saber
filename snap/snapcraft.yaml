@@ -1,6 +1,6 @@
 name: saber # you probably want to 'snapcraft register <name>'
 base: core22 # the base snap is the execution environment for this snap
-adopt-info: desktop
+adopt-info: saber
 grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 license: GPL-3.0
