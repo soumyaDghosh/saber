@@ -1,6 +1,5 @@
 name: saber # you probably want to 'snapcraft register <name>'
 base: core22 # the base snap is the execution environment for this snap
-version: '0.12.8' # just for humans, typically '1.2+git' or '1.3.2'
 adopt-info: desktop
 grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
@@ -32,18 +31,11 @@ parts:
       done
     override-prime: |
       echo 'Skip Prime'
-  desktop:
-    after: [saber, rustup]
-    source: .
-    plugin: dump
-    prime:
-      - snap/*
-    parse-info: [snap/meta/metainfo/com.adilhanney.saber.metainfo.xml]
   saber:
     after: [rustup]
     source: https://github.com/adil192/saber.git
     source-type: git
-    source-tag: v$SNAPCRAFT_PROJECT_VERSION
+    source-tag: v0.12.9
     plugin: flutter
     #build-attributes: [enable-patchelf]
     build-packages:
@@ -63,14 +55,15 @@ parts:
       - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
     override-build: |
       craftctl default
-      mkdir $CRAFT_PRIME/meta
-      mkdir $CRAFT_PRIME/meta/gui
-      mv $CRAFT_PART_SRC/flatpak/com.adilhanney.saber.desktop $CRAFT_PRIME/meta/gui/saber.desktop
+      mkdir -p $CRAFT_PART_INSTALL/meta/gui
+      mv $CRAFT_PART_SRC/flatpak/com.adilhanney.saber.desktop $CRAFT_PART_INSTALL/meta/gui/saber.desktop
+      mkdir $CRAFT_PART_INSTALL/metainfo
+      mv $CRAFT_PART_SRC/flatpak/com.adilhanney.saber.metainfo.xml $CRAFT_PART_INSTALL/metainfo/
+    parse-info: [metainfo/com.adilhanney.saber.metainfo.xml]
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - saber
       - rustup
-      - desktop
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
       - core22
