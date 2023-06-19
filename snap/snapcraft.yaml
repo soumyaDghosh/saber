@@ -40,7 +40,7 @@ parts:
     build-packages:
       - curl
       - jq
-      - libsecret-1-dev
+      - libjsoncpp-dev
     build-snaps:
       - cmake
     stage-packages:
