@@ -34,18 +34,16 @@ parts:
   saber:
     after: [rustup]
     source: https://github.com/adil192/saber.git
-    source-tag: v0.12.10
+    source-tag: v0.13.1
     plugin: flutter
     #build-attributes: [enable-patchelf]
     build-packages:
       - curl
       - jq
       - libsecret-1-dev
-      - libjsoncpp-dev
     build-snaps:
       - cmake
     stage-packages:
-      - libsecret-1-0
       - libjsoncpp25
       - zenity
     build-environment:
